@@ -1,7 +1,7 @@
 ; Code Composer Project File, Version 2.0 (do not modify or remove this line)
 
 [Project Settings]
-ProjectDir="E:\Lab217\EagleEye3\DEMO\380SC\rmva380sc_Universal_V0.26\"
+ProjectDir="E:\Lab217\EagleEye3\DEMO\380SC\rmva380sc_Universal\"
 ProjectType=Executable
 CPUFamily=TMS320C64XX
 Tool="Compiler"

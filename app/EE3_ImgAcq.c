@@ -1,10 +1,10 @@
 /**
  * \file      	EE3_ImgAcq.c 
  * \author    	LQ
- * \version   	0.12
- * \date      	2013.7.23
+ * \version   	0.1.3
+ * \date      	2013.12.31
  * \brief     	图像采集模块(各图像处理线程触发)
- *              
+ * \update      修正触发              
 **/
 
 #include "EE3_common.h"
@@ -14,8 +14,6 @@
 extern volatile Bool            g_bIsDpDataClientConnect;
 extern volatile	Bool			g_bIsTrgClientConnect;
 extern volatile	Bool			g_bIsFconClientConnect;
-extern volatile Bool    		g_bIsUDPClientConnect;
-extern volatile Bool    		g_bIsDecClientConnect;
 extern volatile	Uint8			g_ui8TmpTrgMode;
 extern volatile float			g_fTmpSpeed;
 extern volatile Uint8			g_ui8TmpTrgTime[8];
@@ -122,9 +120,6 @@ int hwiFrameValidFunc()
 int hwiImgAcqOverProcessFunc()
 {
 	Bool	bClientConnect = FALSE;
-	Bool    bAcmdfine = FALSE;
-	Bool    bUDPlisten = FALSE;
-	Bool    bDecClient = FALSE;
 	//进入采集完毕中断首先备份当前运行模式和缓存索引
 	enum Roseek_SensorRunMode enumCurRunMode;
 	Uint8 g_ui8CurBufIndex;
@@ -181,41 +176,20 @@ int hwiImgAcqOverProcessFunc()
 			break;
 		case FconMode:
 			bClientConnect = g_bIsFconClientConnect;
-			bAcmdfine = g_bIsDpDataClientConnect;
-			bUDPlisten = g_bIsUDPClientConnect;
-			bDecClient = g_bIsDecClientConnect;
 			break;
 		default:
 			break;
 	}
-		
-    		 
-    //1、激活图像处理主控模块
-	if(bAcmdfine){
-	    //网络连接正常当前缓存加锁
-	    g_ImgBufStruct[g_ui8CurBufIndex].bProcessLocked = TRUE;
-	    SEM_post(&sem_AcmdBDReady);   //图像处理开始信号量
-		SEM_post(&sem_CmdDataReady); //控制信号接收开始信号量
-	}
-	else{
-		//网络连接不正常当前缓存解锁
-		g_ImgBufStruct[g_ui8CurBufIndex].bProcessLocked = FALSE;
-	}  
-
+	//1、激活图像处理模块	
+    SEM_post(&sem_AcmdBDReady);   	
+    //当前帧缓存加锁
+	g_ImgBufStruct[g_ui8CurBufIndex].bProcessLocked = TRUE;	 
+     
 	//2、激活JPEG模块                                       
- 	if( bClientConnect){                                        
+ 	if( bClientConnect)
+ 	{                                        
  		SEM_post(&sem_JpegReady); //JPEG开始信号量            
  	} 
-
-	//3、激活UDP监听模块                                       
- 	if( bUDPlisten){                                        
- 		SEM_post(&sem_UdplistenReady); //UDPlisten开始信号量            
- 	}
-
-	//4、激活配置信号接收模块                                       
- 	if( bDecClient){                                        
- 		SEM_post(&sem_DecClientReady); //配置信号接收开始信号量            
- 	}
  	                                                         	                                                         	
 
     return 0;

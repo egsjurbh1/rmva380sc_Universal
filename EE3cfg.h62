@@ -111,6 +111,7 @@
 	.global	_tskAcmdDecmainFunc
 	.global	_SendFcontoDecPort
 	.global	_tskJPGEncodetoSDFunc
+	.global	_tskImgmainFunc
 
 ;; MODULE PARAMETERS
 GBL$                .set 1

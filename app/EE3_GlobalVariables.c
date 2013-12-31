@@ -1,8 +1,8 @@
 /**
  * \file      	EE3_GlobalVariables.c
  * \author    	LQ
- * \version   	0.07
- * \date      	2013.11.22
+ * \version   	0.1.0
+ * \date      	2013.12.31
  * \brief     	相机运行时使用的全局变量定义及初始化源文件
  * \update      图像buffer初始化
 **/
@@ -196,7 +196,7 @@ volatile Bool IsReadFlash = TRUE;//是否从Flash中读取相机运行参数（默认开启）
 //相机当前状态参数
 EE3_StateStruct g_EE3State = 
 {
-	"rmva380sc_Universal_V0.27",	//主程序版本号
+	"rmva380sc_Universal_V0.28",	//主程序版本号
 	1								//相机分辨率（1 960*544； 2 1920*1080）
 };
 
@@ -224,14 +224,11 @@ DAT_HANDLE			g_hDAT7;
 volatile	Bool	g_bIsTrgClientConnect = FALSE;
 volatile 	Bool	g_bIsFconClientConnect = FALSE;
 volatile	Bool	g_bIsFcontoDecClientConnect = FALSE;
-volatile    Bool    g_bIsSendRoadInfConnect = FALSE;
 volatile	Bool	g_bIsHfrClientConnect = FALSE;
 volatile	Bool	g_bIsHfrBinClientConnect = FALSE;
 volatile	Bool	g_bIsStopTrgSvr = FALSE;
 volatile	Bool	g_bTrgSvrIsLink = FALSE;
-volatile    Bool    g_bIsDpDataClientConnect = FALSE;
-volatile    Bool    g_bIsUDPClientConnect = FALSE;
-volatile    Bool    g_bIsDecClientConnect = FALSE;
+volatile    Bool    g_bIsSendRoadInfConnect = FALSE;
 volatile	Uint8	ui8SPIO1Config[16] = { 0, 2, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 volatile	Uint8	ui8SPIO2Config[16] = { 0, 2, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 volatile	Uint8	ui8SPIOUDConfig[16] = { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -253,10 +250,8 @@ volatile    int     bTextCount = 0;
 volatile    int     bTextRecev = 0;
 volatile    int     PointDataVD[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 volatile    int     PointDataQD[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-volatile    Uint8   readRTCtime[8];
 volatile    Uint32  nRunT[2];
 volatile    float   RunTimeOnce[NUM_RUMTIME];
-volatile    char    basicCfgSend[60];
 volatile    float   runTimeT[60];
 
 

@@ -1,10 +1,10 @@
 /**
  * \file      	ITS_ImgMain.c 
  * \author    	L.Q.@Lab217.tongji
- * \version   	0.3.3
- * \date      	2013.12.13
+ * \version   	0.3.4
+ * \date      	2013.12.31
  * \brief     	ÖÇÄÜ½»Í¨Ó¦ÓÃ----Í¼Ïñ´¦ÀíÖ÷Ïß³Ì(³µÁ¾¼ì²â¹¦ÄÜ¡¢¶ÓÁÐ³¤¶È¼ì²â¹¦ÄÜ)
- * \update      Ä£¿é»¯
+ * \update      ÐÞÕý¶ÁÈ¡ÅäÖÃÐÅÏ¢BUG
 **/
 
 #include "EE3_common.h"
@@ -52,7 +52,7 @@ void ITS_VehicleDetect(DpPoint *dpPVD);
 void ITS_QueueDetect(DpPoint  *dpPQD);
 int StringConvertInt(char *p);
 void Test_PointDPlus();
-void DecodingCfgData(char *bufstream, int n, char word[][30]);
+Bool DecodingCfgData(char *bufstream, int n, char word[][30]);
 /**************************************************************************/
 /**
  * \function 	tskAcmdBDmainFunc
@@ -61,7 +61,7 @@ void DecodingCfgData(char *bufstream, int n, char word[][30]);
  * \            1¡¢		
  * \            2¡¢
 **/	
-void tskAcmdBDmainFunc()
+void tskImgmainFunc()
 {
 	 Uint8   *pui8IMGbuffer;//µ±Ç°²É¼¯Ö¡Í¼Ïñ»º´æ
 	 Uint8	 i;
@@ -78,21 +78,24 @@ void tskAcmdBDmainFunc()
 	 setwwmeansd( g_bpalgData2.ww, g_bpalgData2.mean, g_bpalgData2.sd);	
 	 ResetPointData();//ÏßÈ¦ÇåÁã
 	     
-     while(TRUE)
+     while( 1 )
 	 {
 	    SEM_pend(&sem_AcmdBDReady,SYS_FOREVER);
 		TSK_sleep( 2 );
+				
 		nRunT[0] = Roseek_GetTickCount();//¿ªÊ¼¼ÆÊý
+		
 		//******¶ÁÈ¡FLASHÖÐµÄÅäÖÃ²ÎÊý£¬Æô¶¯ºó¶ÁÈ¡Ò»´Î¡£
-		if(bReadOnce){
+		if(bReadOnce)
+		{
 			ReadPointDataFromFlash();//¶ÁÏß¿òÅäÖÃÊý¾Ý
-			ReadSetInfFormFlash(IsReadFlash);//¶ÁÏà»úÔËÐÐ²ÎÊýÊý¾Ý
-			//Test_PointDPlus();//²âÊÔÓÃ£¬ÊÖ¶¯Éè¶¨Ïß¿ò´óÐ¡
 			PointDataConfig(dpPointVD, PointDataVD);//³µÁ¾¼ì²âµÄÏß¿òÅäÖÃ
 			PointDataConfig(dpPointQD, PointDataQD);//¶ÓÁÐ¼ì²âµÄÏß¿òÅäÖÃ
+			ReadSetInfFormFlash(IsReadFlash);//¶ÁÏà»úÔËÐÐ²ÎÊýÊý¾Ý
+			//Test_PointDPlus();//²âÊÔÓÃ£¬ÊÖ¶¯Éè¶¨Ïß¿ò´óÐ¡
 			bReadOnce=FALSE;
 		}
-				
+			
 		//ÅÐ¶Ïµ±Ç°´¦ÀíÄÄ¸öÔ­Ê¼Í¼Ïñ»º´æ
 		bBreak = FALSE;
 		if(ui8FrameIndex==5){
@@ -117,20 +120,22 @@ void tskAcmdBDmainFunc()
 				}
 			}
 		}
-		if( !bBreak ){
+		if( !bBreak )
+		{
 			g_ImgBufStruct[ui8FrameIndex].bProcessLocked = FALSE;
 			continue;
 		}
-		g_ImgBufofFrontS.pui8FrameBuf=g_ImgBufStruct[ui8FrameIndex].pui8FrameBuf;//¸´ÖÆÇ°¾°Í¼Ïñ
+		g_ImgBufofFrontS.pui8FrameBuf = g_ImgBufStruct[ui8FrameIndex].pui8FrameBuf;//¸´ÖÆÇ°¾°Í¼Ïñ
+		pui8IMGbuffer = g_ImgBufStruct[ui8FrameIndex].pui8FrameBuf;
 		bsemSendtoDecready = g_bIsFcontoDecClientConnect; //·¢ËÍÍ¼ÏñÏß³Ì×¼±¸Íê±Ï
 		//¼¤»îÏòÅäÖÃ¹¤¾ß´«ÊäÍ¼ÏñÏß³ÌÐÅºÅÁ¿
-		if(bsemSendtoDecready){
+		if(bsemSendtoDecready)
+		{
 	    	SEM_post(&sem_FcontoDecReady);
 		}
-		
-		//´Ë´¦µ÷ÓÃ»­ÐéÄâÏß¿òº¯Êý
-		pui8IMGbuffer=g_ImgBufStruct[ui8FrameIndex].pui8FrameBuf;
-		switch(g_EE3Cur.RunMode){
+ 		//´Ë´¦µ÷ÓÃ»­ÐéÄâÏß¿òº¯Êý		
+		switch(g_EE3Cur.RunMode)
+		{
 			//³µÁ¾¼ì²â
 			case VEHICLE_DETECT:
 				DrawPoint(pui8IMGbuffer, PointDataVD);
@@ -142,7 +147,6 @@ void tskAcmdBDmainFunc()
 			default:
 				break;
 		}
- 
 		//Çå³ý L2 Cache
 		BCACHE_wbAll();
 
@@ -154,7 +158,8 @@ void tskAcmdBDmainFunc()
 		g_ImgBufStruct[ui8FrameIndex].bProcessLocked = FALSE;//Ô­Ê¼Í¼Ïñ½âËø	
 
 		//¹¦ÄÜÅÐ¶Ï
-		switch(g_EE3Cur.RunMode){
+		switch(g_EE3Cur.RunMode)
+		{
 			//³µÁ¾¼ì²â
 			case VEHICLE_DETECT:
 				ITS_VehicleDetect(dpPointVD);
@@ -173,6 +178,8 @@ void tskAcmdBDmainFunc()
 			default:
 				break;
 		}
+		
+	
 
    }//while
    
@@ -360,6 +367,7 @@ void ReadPointDataFromFlash(){
  * \					
  * \			1¡¢FlashÆðÊ¼µØÖ·CFGCOMMONADD´æ´¢µ±Ç°ÔËÐÐ×´Ì¬
  * \            2¡¢FlashÆðÊ¼µØÖ·CFGVDADD´æ´¢³µÁ¾¼ì²âÅäÖÃ£¬FlashÆðÊ¼µØÖ·CFGQDADD´æ´¢¶Ó³¤¼ì²âÅäÖÃ
+ * \update      13.12.31ÐÞÕýBUG
 **/
 void ReadSetInfFormFlash(Bool isReadflash)
 {
@@ -370,6 +378,7 @@ void ReadSetInfFormFlash(Bool isReadflash)
 	char word[3][30];
 	int n1 = 3;
 	int n2 = 2;
+	Bool decodefail[3] = {FALSE, FALSE, FALSE};//½âÎöÅäÖÃ±ê¼Ç
 
 	if(isReadflash)
 	{	
@@ -383,21 +392,40 @@ void ReadSetInfFormFlash(Bool isReadflash)
 		{
 			//½âÎöÅäÖÃÊý¾Ý
 			g_EE3Cur.RunMode = ee3mode;
-			DecodingCfgData(Sdata, n1, word);
-			strcpy(g_EE3Cur.CameraIp, word[0]);
-			strcpy(g_EE3Cur.ServerIp, word[1]);
-			g_EE3Cur.ServerPort = (Uint16)(StringConvertInt(word[2]));
-			DecodingCfgData(scfgtmpVD, n2, word);
-			g_EE3Cur.UploadTime = StringConvertInt(word[0]);
-			g_EE3Cur.NightTrafficStream = StringConvertInt(word[1]);
-			DecodingCfgData(scfgtmpQD, n2, word);			
-			g_EE3Cur.RoadNum[0] = StringConvertInt(word[0]);
-			g_EE3Cur.RoadNum[1] = StringConvertInt(word[1]);
-			g_EE3Cur.Isreadflash = 1;//±ê¼ÇÒÑ¶ÁÈ¡
+			//Í¨ÓÃÅäÖÃ
+			decodefail[0] = DecodingCfgData(Sdata, n1, word);
+			if(decodefail[0] == TRUE)
+			{
+				strcpy(g_EE3Cur.CameraIp, word[0]);
+				strcpy(g_EE3Cur.ServerIp, word[1]);
+				g_EE3Cur.ServerPort = (Uint16)(StringConvertInt(word[2]));
+			}
+			//³µÁ¾¼ì²âÅäÖÃ
+			decodefail[1] = DecodingCfgData(scfgtmpVD, n2, word);
+			if(decodefail[1] == TRUE)
+			{
+				g_EE3Cur.UploadTime = StringConvertInt(word[0]);
+				g_EE3Cur.NightTrafficStream = StringConvertInt(word[1]);
+			}	
+			//¶Ó³¤¼ì²âÅäÖÃ
+			decodefail[2] = DecodingCfgData(scfgtmpQD, n2, word);	
+			if(decodefail[2] == TRUE)
+			{		
+				g_EE3Cur.RoadNum[0] = StringConvertInt(word[0]);
+				g_EE3Cur.RoadNum[1] = StringConvertInt(word[1]);
+			}
+			if((decodefail[0] && decodefail[1] && decodefail[2]) == TRUE)
+			{
+				g_EE3Cur.Isreadflash = 1;//¶ÁÈ¡ÅäÖÃ³É¹¦
+			}
+			else
+			{
+				g_EE3Cur.Isreadflash = 0;//¶ÁÅäÖÃÊ§°Ü
+			}			
 		}
 		else
 		{
-			g_EE3Cur.Isreadflash = 0;//Ä¬ÈÏÅäÖÃ		
+			g_EE3Cur.Isreadflash = 0;//¶ÁÅäÖÃÊ§°Ü	
 		}
 	}	
 }
@@ -407,8 +435,9 @@ void ReadSetInfFormFlash(Bool isReadflash)
  * \				  ²ÎÊýwordnumÒª½âÎöµÄ×Ö¶ÎÊý
  * \			Êä³ö£º²ÎÊýword[][30]×ª´æ×Ö·ûÊý¾ÝÊý×é£¨¸ñÊ½Îª Word \0£©		
  * \			×¢Òâ£º
+ * \update      13.12.31ÐÞÕýBUG
 **/
-void DecodingCfgData(char *bufstream, int wordnum, char word[][30])
+Bool DecodingCfgData(char *bufstream, int wordnum, char word[][30])
 {	
 	int i;
 	int nCountRow = 0;//ÒÑ¶ÁÈ¡µÄ×Ö¶ÎÊý
@@ -418,6 +447,10 @@ void DecodingCfgData(char *bufstream, int wordnum, char word[][30])
 	//×ª´æÖÁwordÊý×éÖÐ
 	for(i = 0;;i++)
 	{
+		if(nCountRow >= wordnum)
+		{
+			break;
+		}
 		if(bufstream[i] == '\n')
 		{
 			nWord = 0;
@@ -431,16 +464,22 @@ void DecodingCfgData(char *bufstream, int wordnum, char word[][30])
 			isWord = FALSE;
 			continue;
 		}
-		if(isWord)
+		//ÊÇ·ñÊÇÕýÈ·µÄ×Ö·û
+		if(( '0' <= bufstream[i] && bufstream[i] <= '9' ) || bufstream[i] == '.')
 		{
-			word[nCountRow][nWord] = bufstream[i];
-			nWord++;
+			if(isWord)
+			{
+				word[nCountRow][nWord] = bufstream[i];
+				nWord++;
+			}
 		}
-		if(nCountRow >= wordnum)
+		else
 		{
-			break;
+			return FALSE;
 		}
+		
 	}
+	return TRUE;
 			
 }
 
@@ -591,7 +630,7 @@ void Count_RunTime(Uint32 *nRT)
 		//¼ÇÂ¼½á¹û
 		g_CmdUdata.nSumRT = nSumRT;
 		g_CmdUdata.nFrame = NUM_RUMTIME / nSumRT * 1000;
-		SEM_post( &sem_DataRunTimeN );//¼¤»îÉÏ´«Êý¾Ý
+		//SEM_post( &sem_DataRunTimeN );//¼¤»îÉÏ´«Êý¾Ý
 		nSumRT = 0;
 		nCountR = 0;
 	}
@@ -670,7 +709,7 @@ void ITS_QueueDetect(DpPoint *dpPQD)
 						  ui8RoadData1=ui8Firstip1-ui8Lastip1;
 						  //ÈÝ´íÅÐ¶Ï
 						  if(ui8RoadData1>0&&ui8RoadData1<999){
-                          		g_BpOutputData1.data=abs(ui8RoadData1);//¶Ó³¤¼ì²âá¹û
+                          		g_BpOutputData1.data=abs(ui8RoadData1);//¶Ó³¤¼ì²âá¹?
 								g_BpOutputData1.agree=1;
 						  }
 						  else{

@@ -111,7 +111,7 @@ type GlobalStatus {
         prop Visible :: 0
         prop Writable :: 1
     }
-    global DATE :: "Tue Dec 17 16:27:28 2013" { 
+    global DATE :: "Tue Dec 31 13:14:45 2013" { 
         prop Type :: "{21455EA3-B96A-11cf-9BFE-0000C0AC14C7}"
         prop Visible :: 0
         prop Writable :: 0
@@ -10654,7 +10654,7 @@ object tskAcmdBDmain :: TSK {
     param iId :: 0
     param iDelUser :: "USER"
     param iDelMsg :: "ok"
-    param iFXN :: @_tskAcmdBDmainFunc
+    param iFXN :: @_tskImgmainFunc
     param iARG0 :: 0
     param iARG1 :: 0
     param iARG2 :: 0

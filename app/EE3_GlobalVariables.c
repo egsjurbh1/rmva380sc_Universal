@@ -196,7 +196,7 @@ volatile Bool IsReadFlash = TRUE;//是否从Flash中读取相机运行参数（默认开启）
 //相机当前状态参数
 EE3_StateStruct g_EE3State = 
 {
-	"rmva380sc_Universal_V0.28",	//主程序版本号
+	"rmva380sc_Universal_V0.29",	//主程序版本号
 	1								//相机分辨率（1 960*544； 2 1920*1080）
 };
 
@@ -244,7 +244,6 @@ volatile    float   Ftmpnow=0;         //当前温度
 volatile    Bool    BIsTrgFrameofBack = FALSE;      //是否作为背景图像
 volatile 	Bool    g_bIsSendPictoDec = FALSE;		//是否传输图像      
 volatile    struct  sockaddr g_ConfigSetaddr;
-volatile    int   	bText = 0;
 volatile    int     bTextConnect = 0;
 volatile    int     bTextCount = 0;
 volatile    int     bTextRecev = 0;

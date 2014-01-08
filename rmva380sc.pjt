@@ -32,6 +32,7 @@ Source="app\EE3_uart_process.c"
 Source="app\EE3_Version.c"
 Source="app\H264MediaSourceLiveDsp.c"
 Source="app\ITS_AlgorithmFunc.c"
+Source="app\ITS_ImgFunc.c"
 Source="app\ITS_ImgMain.c"
 Source="app\ITS_ReceiveCmd.c"
 Source="app\RConfig_ConfigMain.c"
@@ -40,6 +41,9 @@ Source="app\RConfig_UdpListen.c"
 Source="app\RServer_SendRoadInf.c"
 Source="app\rtspMain.c"
 Source="EE3.tcf"
+Source="include\EE3_Imgfunc.h"
+Source="include\EE3_ImgMain.h"
+Source="include\EE3_ITSAlg.h"
 Source="lib\dmjpge_tigem.l64P"
 Source="lib\hal_eth_stub.lib"
 Source="lib\hal_ser_stub.lib"
@@ -75,6 +79,24 @@ Options=-c -m".\Debug\rmva380sc.map" -o".\Debug\rmva380sc.out" -w -x
 
 ["Linker" Settings: "Release"]
 Options=-q -c -m".\Release\rmva380sc.map" -o".\Release\rmva380sc.out" -w -x
+
+["include\EE3_Imgfunc.h" Settings: "Debug"]
+ExcludeFromBuild=true
+
+["include\EE3_Imgfunc.h" Settings: "Release"]
+ExcludeFromBuild=true
+
+["include\EE3_ImgMain.h" Settings: "Debug"]
+ExcludeFromBuild=true
+
+["include\EE3_ImgMain.h" Settings: "Release"]
+ExcludeFromBuild=true
+
+["include\EE3_ITSAlg.h" Settings: "Debug"]
+ExcludeFromBuild=true
+
+["include\EE3_ITSAlg.h" Settings: "Release"]
+ExcludeFromBuild=true
 
 ["EE3.cmd" Settings: "Debug"]
 LinkOrder=1

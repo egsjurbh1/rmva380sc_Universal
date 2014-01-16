@@ -244,6 +244,7 @@ _sem_CmdDataReady = sem_CmdDataReady;
 _sem_UdplistenReady = sem_UdplistenReady;
 _sem_DataRunTimeN = sem_DataRunTimeN;
 _sem_SendRoadInfReady = sem_SendRoadInfReady;
+_sem_SendRoadInfReconnect = sem_SendRoadInfReconnect;
 _IDL_busyObj = IDL_busyObj;
 _HOOK_KNL = HOOK_KNL;
 _hookNdk = hookNdk;

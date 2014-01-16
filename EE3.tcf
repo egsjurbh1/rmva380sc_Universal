@@ -328,6 +328,7 @@ bios.SEM.instance("sem_JpegtoSDReady").destroy();
 bios.SEM.create("sem_DataRunTimeN");
 bios.SEM.create("sem_SendRoadInfReady");
 bios.TSK.instance("tskAcmdBDmain").fxn = prog.extern("tskImgmainFunc");
+bios.SEM.create("sem_SendRoadInfReconnect");
 // !GRAPHICAL_CONFIG_TOOL_SCRIPT_INSERT_POINT!
 
 prog.gen();
